@@ -1,163 +1,145 @@
-# Smart Hotel Feedback Analyzer 🏨
+# Babuseth Guest House & Lodging 🏨
+### Guest Feedback & Service Quality Analyzer
 
-A cognitive computing web application built with Python Flask, NLTK/TextBlob, and modern frontend technologies to analyze hotel guest feedback, classify sentiments, identify service aspects, and automatically generate managerial recommendations.
-
----
-
-## 🌟 Features
-
-1. **Dashboard & Analytics:**
-   - Real-time KPI summary cards: Total Reviews, Positive, Negative, Neutral counts.
-   - Identifies **Most Common Complaint** and **Most Liked Service**.
-   - Interactive charts via **Chart.js** (Doughnut chart for Sentiment Distribution, Bar chart for Feedback by Aspect).
-   
-2. **Cognitive Feedback Analyzer:**
-   - Real-time guest review text input box with one-click test presets.
-   - Implements rule-assisted NLP handling complex contrast sentences (e.g. *"The room was clean but the AC was not working properly"* correctly recognizes **Negative** sentiment and prioritizes the **AC** aspect).
-   - Generates actionable operational recommendations for hotel managers.
-   - Option to automatically log and persist the newly analyzed feedback into the CSV dataset.
-
-3. **Aspect Categorization (10 Hotel Operational Areas):**
-   - **AC:** Air conditioning, cooling, heating, thermostats
-   - **WiFi:** Connectivity, speed, wireless coverage
-   - **Cleanliness:** Hygiene, housekeeping, bathrooms, linens
-   - **Staff:** Front desk courtesy, hospitality, concierge
-   - **Food:** Breakfast buffet, restaurant dining, taste
-   - **Room:** Space, bed comfort, amenities, views
-   - **Service:** Room service turnaround, check-in, check-out
-   - **Price:** Value-for-money, affordability, billing transparency
-   - **Location:** Proximity to city center, transportation, surroundings
-   - **Facilities:** Elevators, swimming pools, fitness gyms, parking
-
-4. **Sentiment Classification:**
-   - Classifies text into **Positive**, **Negative**, or **Neutral** using transparent TextBlob polarity and contextual heuristics without external paid APIs.
-
-5. **Reviews Database & Filters:**
-   - Responsive reviews data table.
-   - Quick filters: **All**, **Positive**, **Negative**, **Neutral**.
-   - Live search filter by keyword or service category.
-
-6. **Operational Insights:**
-   - Automated insights highlighting operational health (e.g., cleanliness satisfaction, recurring complaint bottlenecks, and sentiment trends).
-
-7. **Clean Hotel Dashboard UI:**
-   - Designed with clean white background, ocean blue / teal accents, cards, responsive sidebar, and clear visual hierarchy.
+A Cognitive Computing web application customized specifically for **Babuseth Guest House & Lodging**, located at **Railway Station, Chhatrapati Sambhajinagar, Maharashtra**. The system analyzes guest feedback using Natural Language Processing (NLP) to detect multi-aspect sentiments, identify service issues, and automatically generate managerial recommendations.
 
 ---
 
-## 🧠 Cognitive Computing Pipeline
+## 🏢 Hotel Profile & Contact Details
 
-The system directly implements the 5 core stages of cognitive computing:
+- **Property Name:** Babuseth Guest House & Lodging
+- **Location:** Railway Station, Chhatrapati Sambhajinagar, Maharashtra
+- **Phone:** 7821077435
+- **Email:** babusethguesthouse@gmail.com
+- **Official Branding:** Navy Blue (`#0b1b3d`), Orange (`#ea580c`), White, and Light Gray (`#f8fafc`).
+- **Official Logo:** Included in SVG format at `static/images/babuseth_logo.svg` (rendered seamlessly in sidebar, header, and about section).
+
+---
+
+## 🛏️ Hotel Services & Accommodations
+
+### Room Types:
+1. **Family Room:** Comfortable accommodation for families with spacious bedding.
+2. **Deluxe Room:** Comfortable room suitable for a relaxing stay.
+3. **Super Deluxe Room:** Premium room option for guests seeking additional comfort and quietness.
+
+### Hotel Amenities & Offerings:
+- **AC Rooms:** Air-conditioned rooms for optimal climate control.
+- **Free Wi-Fi:** High-speed internet access for guests.
+- **Free Parking:** Dedicated, secure on-premises parking.
+- **Complimentary Breakfast:** Fresh morning breakfast and hot tea.
+- **24 Hours Service:** Round-the-clock check-in and room assistance.
+- **Friendly Staff:** Courteous and helpful caretaker hospitality.
+- *(Note: No dedicated restaurant is present).*
+
+---
+
+## 🧠 Cognitive Computing Architecture
+
+The system demonstrates the cognitive intelligence workflow transforming human language into managerial decisions:
 
 ```
-[1. Input Human Language]
-         │ (Guest review text)
-         ▼
-[2. Understand Text]
-         │ (Parse syntax, negation clauses & conjunctions)
-         ▼
-[3. Detect Sentiment]
-         │ (Positive / Negative / Neutral)
-         ▼
-[4. Identify Hotel Service]
-         │ (AC, WiFi, Cleanliness, Staff, Food, etc.)
-         ▼
-[5. Generate Recommendation]
-           (Contextual managerial action plan)
+           [ Guest Feedback ]
+                   ↓
+     [ Natural Language Processing ]
+                   ↓
+          [ Sentiment Detection ]
+                   ↓
+      [ Service/Aspect Detection ]
+                   ↓
+        [ Issue Identification ]
+                   ↓
+            [ Recommendation ]
+                   ↓
+      [ Hotel Management Insight ]
 ```
+
+### Cognitive Processing Principles:
+1. **Perception & Natural Language Understanding:** Decomposes complex feedback containing multiple clauses, negation qualifiers, and contrast conjunctions (`but`, `however`, `although`).
+2. **Fine-Grained Aspect Sentiment Mapping:** Simultaneously captures positive traits and isolated grievances.
+   * *Example:* `"The room was very clean and the staff was friendly, but the Wi-Fi was slow."*
+   * **Overall Sentiment:** `Positive`
+   * **Detected Aspects:** Cleanliness → Positive, Staff → Positive, Wi-Fi → Negative
+   * **Priority:** `Medium`
+   * **Main Issue:** `Wi-Fi performance`
+   * **Recommendation:** *"Improve Wi-Fi coverage and connection speed for guests."*
+3. **Action-Oriented Decision Support:** Prescribes targeted operational adjustments rather than static statistics.
+
+---
+
+## 📊 Dashboard & System Features
+
+1. **Dashboard KPI Summary Cards:**
+   - Total Reviews (30 verified stays)
+   - Positive Reviews
+   - Negative Reviews
+   - Neutral Reviews
+   - Average Rating (e.g. 4.0 ★)
+   - Most Praised Service
+   - Most Complained Service
+
+2. **3 Chart.js Visualizations:**
+   - **Guest Sentiment Distribution:** Doughnut chart (Positive, Neutral, Negative).
+   - **Service Feedback Breakdown:** Bar chart (Room, Cleanliness, Staff, AC, Wi-Fi, Parking, Breakfast, Service).
+   - **Positive vs. Negative Feedback:** Grouped bar chart comparing satisfaction by department.
+
+3. **Interactive Feedback Analyzer:**
+   - One-click testing chips for real hotel scenarios.
+   - Live extraction of aspects, sentiments, priority levels, and recommendations.
+   - Option to persist analyzed reviews directly into the guest database.
+
+4. **Dedicated Hotel Services Page:**
+   - Clean, professional cards showcasing Family Rooms, Deluxe Rooms, Super Deluxe Rooms, AC Rooms, Free Wi-Fi, Free Parking, Complimentary Breakfast, 24 Hours Service, and Friendly Staff.
+
+5. **Guest Reviews Database:**
+   - Filter by All, Positive, Negative, or Neutral.
+   - Real-time search across guest reviews and service tags.
+
+6. **Actionable Insights:**
+   - Highlights staff courtesy, room cleanliness standards, Wi-Fi optimization alerts, and the strategic railway station location advantage.
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Frontend:** HTML5, CSS3 (Modern Flexbox & Grid), JavaScript (Vanilla ES6), Font Awesome icons
-- **Data Visualizations:** Chart.js
-- **Backend:** Python 3 (Flask framework)
-- **Natural Language Processing (NLP):** TextBlob + NLTK
-- **Storage / Dataset:** CSV (`data/hotel_reviews.csv` with 50 realistic guest reviews)
+- **Backend:** Python 3 + Flask framework
+- **NLP Engine:** TextBlob + rule-assisted syntax heuristics
+- **Data Persistence:** CSV (`data/hotel_reviews.csv` with 30 realistic guest feedback entries)
+- **Frontend:** Responsive HTML5, CSS3 (Navy Blue & Orange hotel palette), Vanilla JavaScript ES6
+- **Visualizations:** Chart.js
+- **Icons:** Font Awesome 6
 
 ---
 
-## 📁 Project Structure
+## 🚀 How to Run the Application
 
-```
-smart-hotel-feedback-analyzer/
-├── app.py                     # Flask application server & REST APIs
-├── nlp_analyzer.py            # Cognitive NLP engine (aspect detection, sentiment, suggestions)
-├── test_analyzer.py           # Automated unit test suite
-├── requirements.txt           # Python package dependencies
-├── README.md                  # Project documentation & execution guide
-├── data/
-│   └── hotel_reviews.csv      # 50 sample hotel reviews
-├── templates/
-│   └── index.html             # Single-Page Application (SPA) dashboard
-└── static/
-    ├── css/
-    │   └── style.css          # Professional hotel UI stylesheet
-    └── js/
-        └── app.js             # Interactive client-side logic & Chart.js rendering
-```
-
----
-
-## 🚀 Installation & Setup
-
-### Prerequisites
-- Python 3.8+ installed on your computer.
-
-### Step 1: Open Terminal and Navigate to Project Directory
-```bash
+### 1. Open Terminal and Navigate to the Directory:
+```powershell
 cd "C:\Users\Ishan\.gemini\antigravity\scratch\smart-hotel-feedback-analyzer"
 ```
 
-### Step 2: Install Required Dependencies
-```bash
+### 2. Install Dependencies (if not already installed):
+```powershell
 pip install -r requirements.txt
 ```
 
-### Step 3: Run the Application
-```bash
+### 3. Start the Flask Server:
+```powershell
 python app.py
 ```
 
-### Step 4: Access the Web App
-Open your web browser and go to:
+### 4. Access the Website:
+Open your browser and navigate to:
 ```
 http://127.0.0.1:5000/
 ```
 
 ---
 
-## 🧪 Verification & Example Runs
+## 🧪 Automated Testing
 
-The test suite can be run at any time:
-```bash
+Run the automated test suite verifying all hotel aspects, sentiment detection, and recommendation rules:
+```powershell
 python test_analyzer.py
 ```
-
-### Example Test Inputs & Outputs:
-
-1. **Input:** `"The room was clean but the AC was not working properly."`
-   - **Sentiment:** `Negative`
-   - **Aspect:** `AC`
-   - **Suggestion:** *"Check and maintain the room AC and HVAC units regularly to ensure proper cooling and heating."*
-
-2. **Input:** `"Exceptional hospitality! The front desk staff welcomed us warmly and helped with our luggage."`
-   - **Sentiment:** `Positive`
-   - **Aspect:** `Staff`
-   - **Suggestion:** *"Commend the front-desk and support staff for their welcoming and courteous hospitality."*
-
-3. **Input:** `"The complimentary breakfast buffet had delicious fresh fruit, pastries, and great coffee."`
-   - **Sentiment:** `Positive`
-   - **Aspect:** `Food`
-   - **Suggestion:** *"Continue offering high-quality, varied, and fresh breakfast and dining menus."*
-
-4. **Input:** `"Wi-Fi kept disconnecting during my remote work meetings, very frustrating."`
-   - **Sentiment:** `Negative`
-   - **Aspect:** `WiFi`
-   - **Suggestion:** *"Upgrade internet bandwidth, replace aging routers, and enhance Wi-Fi coverage across all guest floors."*
-
-5. **Input:** `"The room was fairly standard with basic furnishings and adequate lighting."`
-   - **Sentiment:** `Neutral`
-   - **Aspect:** `Room`
-   - **Suggestion:** *"Ensure all room amenities, lighting, and toiletries are stocked and functioning properly."*
+*(All 9 unit tests pass in < 0.3s).*

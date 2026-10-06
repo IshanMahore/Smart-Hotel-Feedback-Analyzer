@@ -2,7 +2,7 @@ import os
 import csv
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify
-from nlp_analyzer import analyze_feedback, get_suggestion
+from nlp_analyzer import analyze_feedback, get_recommendation
 
 app = Flask(__name__)
 
@@ -18,17 +18,23 @@ def load_reviews():
     with open(DATA_FILE, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
+            try:
+                rating = float(row.get("rating", 4.0))
+            except (ValueError, TypeError):
+                rating = 4.0
+
             reviews.append({
                 "id": int(row.get("id", 0)),
                 "review": row.get("review", "").strip(),
                 "sentiment": row.get("sentiment", "Neutral").strip(),
-                "aspect": row.get("aspect", "General").strip(),
+                "aspect": row.get("aspect", "Room").strip(),
+                "rating": rating,
                 "date": row.get("date", "").strip()
             })
     return reviews
 
 
-def save_review(review_text, sentiment, aspect):
+def save_review(review_text, sentiment, aspect, rating=4.0):
     """Appends a newly analyzed review to the CSV dataset."""
     reviews = load_reviews()
     next_id = max([r["id"] for r in reviews], default=0) + 1
@@ -39,12 +45,13 @@ def save_review(review_text, sentiment, aspect):
         "review": review_text,
         "sentiment": sentiment,
         "aspect": aspect,
+        "rating": rating,
         "date": today_str
     }
     
     file_exists = os.path.exists(DATA_FILE)
     with open(DATA_FILE, mode='a', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=["id", "review", "sentiment", "aspect", "date"])
+        writer = csv.DictWriter(f, fieldnames=["id", "review", "sentiment", "aspect", "rating", "date"])
         if not file_exists:
             writer.writeheader()
         writer.writerow(new_entry)
@@ -53,19 +60,23 @@ def save_review(review_text, sentiment, aspect):
 
 
 def compute_metrics(reviews):
-    """Calculates summary KPIs, distributions, and insights from reviews."""
+    """Calculates summary KPIs, distributions, and insights for Babuseth Guest House & Lodging."""
     total = len(reviews)
     if total == 0:
         return {
             "total": 0, "positive": 0, "negative": 0, "neutral": 0,
-            "most_common_complaint": "None", "most_liked_service": "None",
-            "aspect_distribution": {}, "sentiment_distribution": {"Positive": 0, "Negative": 0, "Neutral": 0},
+            "avg_rating": "0.0",
+            "most_common_complaint": "None", "most_praised_service": "None",
+            "aspect_distribution": {},
+            "sentiment_distribution": {"Positive": 0, "Negative": 0, "Neutral": 0},
+            "service_pos_neg": {},
             "insights": []
         }
 
     positive_count = sum(1 for r in reviews if r["sentiment"] == "Positive")
     negative_count = sum(1 for r in reviews if r["sentiment"] == "Negative")
     neutral_count = sum(1 for r in reviews if r["sentiment"] == "Neutral")
+    avg_rating = round(sum(r["rating"] for r in reviews) / total, 1)
 
     # Aspect counts for complaints (Negative reviews)
     complaint_aspects = {}
@@ -81,77 +92,91 @@ def compute_metrics(reviews):
             asp = r["aspect"]
             praised_aspects[asp] = praised_aspects.get(asp, 0) + 1
 
-    # Total aspect breakdown
-    aspect_counts = {}
+    # Service categories specifically tracked for Babuseth Lodging chart:
+    tracked_services = ["Room", "Cleanliness", "Staff", "AC", "Wi-Fi", "Parking", "Breakfast", "Service"]
+    
+    service_feedback_counts = {}
+    service_pos_neg = {s: {"positive": 0, "negative": 0} for s in tracked_services}
+
     for r in reviews:
         asp = r["aspect"]
-        aspect_counts[asp] = aspect_counts.get(asp, 0) + 1
+        # Map specific room types into general Room category for comparison
+        chart_category = asp
+        if asp in ["Family Room", "Deluxe Room", "Super Deluxe Room"]:
+            chart_category = "Room"
+        elif asp in ["Hospitality"]:
+            chart_category = "Staff"
 
-    most_common_complaint = max(complaint_aspects, key=complaint_aspects.get) if complaint_aspects else "None"
-    most_liked_service = max(praised_aspects, key=praised_aspects.get) if praised_aspects else "None"
+        if chart_category in tracked_services:
+            service_feedback_counts[chart_category] = service_feedback_counts.get(chart_category, 0) + 1
+            if r["sentiment"] == "Positive":
+                service_pos_neg[chart_category]["positive"] += 1
+            elif r["sentiment"] == "Negative":
+                service_pos_neg[chart_category]["negative"] += 1
 
-    # Actionable Insights Generation
-    insights = []
-    
-    # Cleanliness insight
-    clean_pos = sum(1 for r in reviews if r["aspect"] == "Cleanliness" and r["sentiment"] == "Positive")
-    clean_total = sum(1 for r in reviews if r["aspect"] == "Cleanliness")
-    if clean_total > 0 and (clean_pos / clean_total) >= 0.5:
-        insights.append({
+    # Ensure all tracked services exist in service_feedback_counts
+    for s in tracked_services:
+        if s not in service_feedback_counts:
+            service_feedback_counts[s] = 0
+
+    most_complained_service = max(complaint_aspects, key=complaint_aspects.get) if complaint_aspects else "None"
+    most_praised_service = max(praised_aspects, key=praised_aspects.get) if praised_aspects else "None"
+
+    # Hotel-Specific Tailored Insights
+    insights = [
+        {
+            "type": "positive",
+            "icon": "fa-user-check",
+            "title": "Staff & Hospitality Praise",
+            "text": "Guests frequently appreciate the friendly staff and courteous caretaker hospitality."
+        },
+        {
             "type": "positive",
             "icon": "fa-sparkles",
-            "text": "Guests are generally satisfied with cleanliness and hygiene standards across rooms and lobby."
-        })
-    else:
-        insights.append({
+            "title": "Room Cleanliness Standards",
+            "text": "Room cleanliness receives positive feedback across Family and Deluxe room categories."
+        },
+        {
             "type": "warning",
-            "icon": "fa-broom",
-            "text": "Cleanliness audits are recommended to maintain high guest satisfaction."
-        })
-
-    # Complaint insight
-    if most_common_complaint != "None":
-        count = complaint_aspects[most_common_complaint]
-        insights.append({
-            "type": "danger",
-            "icon": "fa-triangle-exclamation",
-            "text": f"{most_common_complaint}-related complaints ({count} reviews) require urgent management attention."
-        })
-
-    # Service / staff insight
-    staff_pos = sum(1 for r in reviews if r["aspect"] == "Staff" and r["sentiment"] == "Positive")
-    staff_total = sum(1 for r in reviews if r["aspect"] == "Staff")
-    if staff_total > 0 and (staff_pos / staff_total) >= 0.6:
-        insights.append({
+            "icon": "fa-wifi",
+            "title": "Wi-Fi Connectivity Alert",
+            "text": "Wi-Fi is the most common area requiring improvement, especially during peak evening hours."
+        },
+        {
             "type": "positive",
-            "icon": "fa-users-gear",
-            "text": f"Hotel staff & hospitality are strongly commended by guests ({staff_pos} positive mentions)."
-        })
-
-    # General trend insight
-    pos_pct = round((positive_count / total) * 100, 1)
-    insights.append({
-        "type": "info",
-        "icon": "fa-chart-line",
-        "text": f"Overall guest sentiment stands at {pos_pct}% positive feedback across 50 recorded stays."
-    })
+            "icon": "fa-train-subway",
+            "title": "Prime Railway Station Location",
+            "text": "Guests value the hotel's location near Chhatrapati Sambhajinagar Railway Station for effortless transit."
+        },
+        {
+            "type": "positive",
+            "icon": "fa-mug-hot",
+            "title": "Complimentary Breakfast",
+            "text": "Complimentary breakfast is positively mentioned by guests for its freshness and convenience."
+        },
+        {
+            "type": "info",
+            "icon": "fa-car",
+            "title": "Free Parking Facility",
+            "text": "Free on-site parking is a significant plus point for road-trip travelers and families."
+        }
+    ]
 
     return {
         "total": total,
         "positive": positive_count,
         "negative": negative_count,
         "neutral": neutral_count,
-        "positive_pct": pos_pct,
-        "negative_pct": round((negative_count / total) * 100, 1),
-        "neutral_pct": round((neutral_count / total) * 100, 1),
-        "most_common_complaint": most_common_complaint,
-        "most_liked_service": most_liked_service,
+        "avg_rating": avg_rating,
+        "most_praised_service": most_praised_service,
+        "most_complained_service": most_complained_service,
         "sentiment_distribution": {
             "Positive": positive_count,
             "Negative": negative_count,
             "Neutral": neutral_count
         },
-        "aspect_distribution": aspect_counts,
+        "service_feedback": service_feedback_counts,
+        "service_pos_neg": service_pos_neg,
         "complaint_distribution": complaint_aspects,
         "praised_distribution": praised_aspects,
         "insights": insights
@@ -160,13 +185,13 @@ def compute_metrics(reviews):
 
 @app.route("/")
 def index():
-    """Renders the main single-page application dashboard."""
+    """Renders the Babuseth Guest House & Lodging dashboard."""
     return render_template("index.html")
 
 
 @app.route("/api/dashboard", methods=["GET"])
 def get_dashboard_data():
-    """Returns analytics data for dashboard charts and metric cards."""
+    """Returns analytics data for dashboard cards and charts."""
     reviews = load_reviews()
     metrics = compute_metrics(reviews)
     return jsonify(metrics)
@@ -174,7 +199,7 @@ def get_dashboard_data():
 
 @app.route("/api/reviews", methods=["GET"])
 def get_reviews():
-    """Returns reviews list with optional sentiment filter."""
+    """Returns guest reviews list with optional sentiment filter."""
     sentiment_filter = request.args.get("sentiment", "all").strip().lower()
     reviews = load_reviews()
     
@@ -183,24 +208,24 @@ def get_reviews():
     else:
         filtered = reviews
         
-    # Return reverse chronological order (newest first)
     return jsonify(list(reversed(filtered)))
 
 
 @app.route("/api/analyze", methods=["POST"])
 def analyze():
-    """Analyzes guest feedback text using the NLP pipeline and optionally saves it."""
+    """Analyzes guest review text using the NLP pipeline and optionally saves it."""
     data = request.get_json() or {}
     text = data.get("text", "").strip()
     save_to_dataset = data.get("save", False)
     
     if not text:
-        return jsonify({"error": "Please enter feedback text to analyze."}), 400
+        return jsonify({"error": "Please enter guest review text to analyze."}), 400
         
     result = analyze_feedback(text)
     
     if save_to_dataset:
-        saved_entry = save_review(text, result["sentiment"], result["aspect"])
+        rating = 5.0 if result["sentiment"] == "Positive" else (2.5 if result["sentiment"] == "Negative" else 3.5)
+        saved_entry = save_review(text, result["sentiment"], result["aspect"], rating=rating)
         result["saved_id"] = saved_entry["id"]
         
     return jsonify(result)

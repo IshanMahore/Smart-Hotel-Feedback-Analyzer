@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Hotel Feedback Analyzer</title>
+    <title>Babuseth Guest House & Lodging - Feedback Analyzer</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom Stylesheet -->
+    <!-- Custom Theme Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -16,17 +16,17 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <div class="brand-header">
-            <i class="fa-solid fa-hotel brand-icon"></i>
-            <div>
-                <h2>Smart Hotel</h2>
-                <p>Feedback Analyzer</p>
+            <img src="{{ url_for('static', filename='images/babuseth_logo.svg') }}" alt="Babuseth Logo" class="brand-logo-img">
+            <div class="brand-title-wrap">
+                <h2>Babuseth</h2>
+                <p>Guest House &amp; Lodging</p>
             </div>
         </div>
 
         <ul class="nav-links">
             <li>
                 <a class="nav-item active" data-view="dashboard">
-                    <i class="fa-solid fa-chart-pie"></i>
+                    <i class="fa-solid fa-hotel"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
@@ -37,15 +37,9 @@
                 </a>
             </li>
             <li>
-                <a class="nav-item" data-view="aspects">
-                    <i class="fa-solid fa-cubes"></i>
-                    <span>Hotel Aspects</span>
-                </a>
-            </li>
-            <li>
                 <a class="nav-item" data-view="reviews">
                     <i class="fa-solid fa-list-check"></i>
-                    <span>Reviews</span>
+                    <span>Guest Reviews</span>
                 </a>
             </li>
             <li>
@@ -55,35 +49,50 @@
                 </a>
             </li>
             <li>
+                <a class="nav-item" data-view="services">
+                    <i class="fa-solid fa-bell-concierge"></i>
+                    <span>Hotel Services</span>
+                </a>
+            </li>
+            <li>
                 <a class="nav-item" data-view="about">
-                    <i class="fa-solid fa-brain"></i>
+                    <i class="fa-solid fa-circle-info"></i>
                     <span>About</span>
                 </a>
             </li>
         </ul>
 
         <div class="sidebar-footer">
-            <div class="status-dot"></div>
-            <span>NLP Engine Online</span>
+            <div>
+                <span class="status-dot"></span>
+                <span>Cognitive NLP Live</span>
+            </div>
+            <i class="fa-solid fa-shield-halved" style="color: #fb923c;"></i>
         </div>
     </aside>
 
     <!-- Main Workspace -->
     <div class="main-wrapper">
-        <!-- Top Header Bar -->
+        <!-- Top Navigation Bar -->
         <header class="top-navbar">
-            <div class="page-title">
-                <h1 id="pageHeading">Hotel Feedback Dashboard</h1>
-                <p id="pageSubheading">Real-time overview of guest sentiments and service performance</p>
+            <div class="header-brand-display">
+                <img src="{{ url_for('static', filename='images/babuseth_logo.svg') }}" alt="Babuseth Emblem" class="header-logo-icon">
+                <div class="page-title">
+                    <h1 id="pageHeading">Babuseth Guest House &amp; Lodging</h1>
+                    <p id="pageSubheading">Guest Feedback Intelligence Dashboard</p>
+                </div>
             </div>
             <div class="top-actions">
-                <span class="badge badge-info">
-                    <i class="fa-solid fa-database"></i> 50+ Verified Reviews
+                <span class="badge-tag badge-station">
+                    <i class="fa-solid fa-train"></i> Railway Station, Sambhajinagar
+                </span>
+                <span class="badge-tag badge-navy">
+                    <i class="fa-solid fa-phone"></i> 7821077435
                 </span>
             </div>
         </header>
 
-        <!-- Content Body with Dynamic Views -->
+        <!-- Content Body -->
         <main class="content-body">
 
             <!-- 1. DASHBOARD VIEW -->
@@ -94,9 +103,9 @@
                         <div class="metric-info">
                             <h3>Total Reviews</h3>
                             <div class="number" id="metricTotal">--</div>
-                            <div class="subtitle">Verified stays analyzed</div>
+                            <div class="subtitle">Verified guest stays</div>
                         </div>
-                        <div class="metric-icon-wrap icon-blue">
+                        <div class="metric-icon-wrap icon-navy">
                             <i class="fa-solid fa-comments"></i>
                         </div>
                     </div>
@@ -105,7 +114,7 @@
                         <div class="metric-info">
                             <h3>Positive Reviews</h3>
                             <div class="number" style="color: var(--sentiment-pos);" id="metricPositive">--</div>
-                            <div class="subtitle">Satisfied guests</div>
+                            <div class="subtitle">Delighted guests</div>
                         </div>
                         <div class="metric-icon-wrap icon-green">
                             <i class="fa-solid fa-thumbs-up"></i>
@@ -116,10 +125,10 @@
                         <div class="metric-info">
                             <h3>Negative Reviews</h3>
                             <div class="number" style="color: var(--sentiment-neg);" id="metricNegative">--</div>
-                            <div class="subtitle">Actionable issues</div>
+                            <div class="subtitle">Service issues</div>
                         </div>
                         <div class="metric-icon-wrap icon-red">
-                            <i class="fa-solid fa-thumbs-down"></i>
+                            <i class="fa-solid fa-triangle-exclamation"></i>
                         </div>
                     </div>
 
@@ -136,44 +145,67 @@
 
                     <div class="card metric-card">
                         <div class="metric-info">
-                            <h3>Top Complaint</h3>
-                            <div class="number" style="font-size: 1.3rem; color: #dc2626;" id="metricComplaint">--</div>
-                            <div class="subtitle">Frequent service issue</div>
+                            <h3>Average Rating</h3>
+                            <div class="number" style="color: var(--orange-main);" id="metricRating">--</div>
+                            <div class="subtitle">Overall stay score</div>
                         </div>
-                        <div class="metric-icon-wrap icon-red">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div class="metric-icon-wrap icon-orange">
+                            <i class="fa-solid fa-star"></i>
                         </div>
                     </div>
 
                     <div class="card metric-card">
                         <div class="metric-info">
-                            <h3>Most Liked</h3>
-                            <div class="number" style="font-size: 1.3rem; color: #059669;" id="metricPraised">--</div>
-                            <div class="subtitle">Highest guest praise</div>
+                            <h3>Most Praised</h3>
+                            <div class="number" style="font-size: 1.25rem; color: #16a34a;" id="metricPraised">--</div>
+                            <div class="subtitle">Top guest highlight</div>
                         </div>
-                        <div class="metric-icon-wrap icon-teal">
+                        <div class="metric-icon-wrap icon-green">
                             <i class="fa-solid fa-award"></i>
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-info">
+                            <h3>Most Complained</h3>
+                            <div class="number" style="font-size: 1.25rem; color: #dc2626;" id="metricComplaint">--</div>
+                            <div class="subtitle">Immediate priority</div>
+                        </div>
+                        <div class="metric-icon-wrap icon-red">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
                         </div>
                     </div>
                 </div>
 
-                <!-- Charts Layout -->
-                <div class="charts-grid">
+                <!-- 3 Required Charts Layout -->
+                <div class="charts-grid-3">
+                    <!-- Chart 1: Guest Sentiment Distribution -->
                     <div class="card">
                         <div class="card-title">
-                            <span><i class="fa-solid fa-chart-pie"></i> Sentiment Distribution</span>
+                            <span><i class="fa-solid fa-chart-pie"></i> Guest Sentiment Distribution</span>
                         </div>
                         <div class="chart-container">
                             <canvas id="sentimentChart"></canvas>
                         </div>
                     </div>
 
+                    <!-- Chart 2: Service Feedback -->
                     <div class="card">
                         <div class="card-title">
-                            <span><i class="fa-solid fa-chart-simple"></i> Feedback by Hotel Aspect</span>
+                            <span><i class="fa-solid fa-chart-column"></i> Service Feedback Breakdown</span>
                         </div>
                         <div class="chart-container">
-                            <canvas id="aspectChart"></canvas>
+                            <canvas id="serviceFeedbackChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 3: Positive vs Negative Feedback -->
+                    <div class="card chart-card-full">
+                        <div class="card-title">
+                            <span><i class="fa-solid fa-chart-bar"></i> Positive vs. Negative Feedback by Hotel Service</span>
+                        </div>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="posNegChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -182,40 +214,43 @@
             <!-- 2. ANALYZE FEEDBACK VIEW -->
             <section id="view-analyze" class="page-view">
                 <div class="analyzer-wrapper">
-                    <!-- Feedback Input Card -->
+                    <!-- Review Input Card -->
                     <div class="card input-card">
                         <div class="card-title">
-                            <span><i class="fa-solid fa-pen-to-square"></i> Enter Guest Feedback</span>
+                            <span><i class="fa-solid fa-pen-fancy"></i> Analyze Guest Feedback</span>
                         </div>
                         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
-                            Click a sample test case below or enter any guest review text:
+                            Select a sample hotel review scenario or input live guest feedback:
                         </p>
 
-                        <!-- Presets for fast testing -->
+                        <!-- Presets with Real Hotel Scenarios -->
                         <div class="preset-buttons">
-                            <button type="button" class="preset-chip" data-text="The room was clean but the AC was not working properly.">
-                                <i class="fa-solid fa-fan"></i> Test Case 1: AC Issue
+                            <button type="button" class="preset-chip" data-text="The room was very clean and the staff was friendly, but the Wi-Fi was slow.">
+                                <i class="fa-solid fa-wifi"></i> Clean Room + Staff, Slow Wi-Fi
                             </button>
-                            <button type="button" class="preset-chip" data-text="Front desk staff were exceptionally polite and helped us check in early.">
-                                <i class="fa-solid fa-user"></i> Test Case 2: Polite Staff
+                            <button type="button" class="preset-chip" data-text="AC in room was making rattling noise and cooling was inadequate.">
+                                <i class="fa-solid fa-fan"></i> AC Cooling Defect
                             </button>
-                            <button type="button" class="preset-chip" data-text="The breakfast buffet was delicious and had plenty of fresh choices.">
-                                <i class="fa-solid fa-utensils"></i> Test Case 3: Food
+                            <button type="button" class="preset-chip" data-text="We stayed in the Family Room. Very spacious and kids enjoyed the stay!">
+                                <i class="fa-solid fa-house-chimney-window"></i> Family Room Praise
                             </button>
-                            <button type="button" class="preset-chip" data-text="Wi-Fi kept dropping every 5 minutes during our video meetings.">
-                                <i class="fa-solid fa-wifi"></i> Test Case 4: WiFi Trouble
+                            <button type="button" class="preset-chip" data-text="Great location right next to the railway station, very convenient for train travelers.">
+                                <i class="fa-solid fa-train"></i> Railway Station Location
                             </button>
-                            <button type="button" class="preset-chip" data-text="The room was standard and the price was average for downtown.">
-                                <i class="fa-solid fa-tag"></i> Test Case 5: Neutral Price
+                            <button type="button" class="preset-chip" data-text="Complimentary breakfast was fresh and served with tasty hot tea.">
+                                <i class="fa-solid fa-mug-hot"></i> Complimentary Breakfast
+                            </button>
+                            <button type="button" class="preset-chip" data-text="Parking space was congested and difficult to take the car out.">
+                                <i class="fa-solid fa-car"></i> Parking Congestion
                             </button>
                         </div>
 
-                        <textarea id="feedbackInput" class="feedback-input" placeholder="e.g. The room was clean but the AC was not working properly."></textarea>
+                        <textarea id="feedbackInput" class="feedback-input" placeholder="e.g. The room was very clean and the staff was friendly, but the Wi-Fi was slow."></textarea>
 
                         <div class="action-bar">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="saveToDataset" checked>
-                                <span>Save analysis to reviews dataset</span>
+                                <span>Save analyzed review to guest database</span>
                             </label>
                             <button id="btnAnalyze" class="btn btn-primary">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Feedback
@@ -223,7 +258,7 @@
                         </div>
                     </div>
 
-                    <!-- Analysis Output Card -->
+                    <!-- Analysis Output Presentation Card -->
                     <div class="card result-card">
                         <div class="card-title">
                             <span><i class="fa-solid fa-microchip"></i> Cognitive Analysis Output</span>
@@ -231,157 +266,161 @@
 
                         <div id="resultEmpty" class="empty-state">
                             <i class="fa-solid fa-clipboard-question"></i>
-                            <p>Enter text on the left and click "Analyze Feedback" to view sentiment, service aspect, and management recommendations.</p>
+                            <p>Enter guest feedback on the left and click "Analyze Feedback" to extract sentiments, service aspects, and operational suggestions.</p>
                         </div>
 
                         <div id="resultBox" style="display: none;">
                             <div class="result-header">
-                                <span id="resSentimentBadge" class="sentiment-badge-lg badge-negative">
-                                    <i class="fa-regular fa-face-frown"></i> Sentiment: Negative
+                                <span id="resSentimentBadge" class="sentiment-badge-lg badge-positive">
+                                    <i class="fa-regular fa-face-smile"></i> Overall Sentiment: Positive
                                 </span>
-                                <span id="resPolarity" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">
-                                    Polarity Score: -0.5
-                                </span>
-                            </div>
-
-                            <div class="result-aspect-box">
-                                <span>Detected Aspect</span>
-                                <h3>
-                                    <i class="fa-solid fa-tags" style="color: var(--brand-blue);"></i>
-                                    <span id="resAspect">AC / Maintenance</span>
-                                </h3>
-                            </div>
-
-                            <div class="suggestion-box">
-                                <h4><i class="fa-solid fa-lightbulb"></i> Management Suggestion</h4>
-                                <p id="resSuggestion">"Check and maintain the room AC units regularly."</p>
-                            </div>
-
-                            <!-- Step-by-Step Cognitive Pipeline Flow -->
-                            <div class="cognitive-flow">
-                                <div class="flow-title">Cognitive Computing Pipeline Trace</div>
-                                <div class="step-timeline" id="resPipeline">
-                                    <!-- Populated dynamically -->
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary);">PRIORITY:</span>
+                                    <span id="resPriority" class="priority-pill priority-medium">Medium</span>
                                 </div>
                             </div>
+
+                            <!-- Detected Aspects Breakdown -->
+                            <div style="margin-bottom: 14px;">
+                                <span style="font-size: 0.76rem; font-weight: 700; color: var(--navy-dark); text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Detected Aspects:
+                                </span>
+                                <div class="aspect-chips-container" id="resAspectsContainer">
+                                    <!-- Populated dynamically: Cleanliness → Positive, Staff → Positive, Wi-Fi → Negative -->
+                                </div>
+                            </div>
+
+                            <!-- Main Issue Identification -->
+                            <div class="issue-box">
+                                <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+                                    Main Identified Issue:
+                                </span>
+                                <div style="font-size: 0.95rem; font-weight: 700; color: var(--navy-dark); margin-top: 2px;" id="resMainIssue">
+                                    Wi-Fi performance
+                                </div>
+                            </div>
+
+                            <!-- Recommendation Box -->
+                            <div class="recommendation-box">
+                                <h4><i class="fa-solid fa-lightbulb"></i> Management Recommendation</h4>
+                                <p id="resRecommendation">"Improve Wi-Fi coverage and connection speed for guests."</p>
+                            </div>
+
+                            <!-- Cognitive Timeline Trace -->
+                            <div class="cognitive-flow">
+                                <div class="flow-title">Cognitive Computing Pipeline Trace</div>
+                                <div class="step-timeline" id="resPipeline"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- 3. HOTEL ASPECTS VIEW -->
-            <section id="view-aspects" class="page-view">
-                <div class="card">
+            <!-- 3. HOTEL SERVICES PAGE -->
+            <section id="view-services" class="page-view">
+                <div class="card" style="margin-bottom: 24px;">
                     <div class="card-title">
-                        <span><i class="fa-solid fa-cubes"></i> Detected Hotel Operational Categories</span>
+                        <span><i class="fa-solid fa-bell-concierge"></i> Babuseth Guest House &amp; Lodging Accommodation &amp; Facilities</span>
                     </div>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
-                        The system uses rule-assisted Natural Language Processing to categorize reviews into 10 essential hotel services:
+                    <p style="color: var(--text-secondary); font-size: 0.92rem; line-height: 1.5;">
+                        Located conveniently at the Railway Station in Chhatrapati Sambhajinagar, Babuseth Guest House &amp; Lodging offers comfortable, secure, and guest-centric accommodation tailored for family getaways, business trips, and pilgrimage travelers.
                     </p>
+                </div>
 
-                    <div class="aspects-grid">
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-bed"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>Room</h4>
-                                <p>Beds, comfort, space, views, bathroom fittings</p>
-                            </div>
-                        </div>
+                <div class="hotel-services-grid">
+                    <!-- Family Room -->
+                    <div class="service-offering-card">
+                        <span class="service-card-tag">Room Type</span>
+                        <div class="service-card-icon"><i class="fa-solid fa-house-chimney-user"></i></div>
+                        <h3>Family Room</h3>
+                        <p>Comfortable accommodation for families with spacious arrangements, multiple beds, and welcoming amenities.</p>
+                    </div>
 
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-sparkles"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>Cleanliness</h4>
-                                <p>Housekeeping hygiene, sanitization, fresh linens</p>
-                            </div>
-                        </div>
+                    <!-- Deluxe Room -->
+                    <div class="service-offering-card">
+                        <span class="service-card-tag">Room Type</span>
+                        <div class="service-card-icon"><i class="fa-solid fa-bed"></i></div>
+                        <h3>Deluxe Room</h3>
+                        <p>Comfortable room suitable for a relaxing stay with cozy bedding, clean washrooms, and modern amenities.</p>
+                    </div>
 
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-user-tie"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>Staff</h4>
-                                <p>Front desk, concierge, courtesy, hospitality</p>
-                            </div>
-                        </div>
+                    <!-- Super Deluxe Room -->
+                    <div class="service-offering-card">
+                        <span class="service-card-tag">Room Type</span>
+                        <div class="service-card-icon"><i class="fa-solid fa-crown"></i></div>
+                        <h3>Super Deluxe Room</h3>
+                        <p>Premium room option for guests seeking additional comfort, superior furnishings, and peaceful privacy.</p>
+                    </div>
 
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-utensils"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>Food</h4>
-                                <p>Breakfast buffet, restaurants, dining quality</p>
-                            </div>
-                        </div>
+                    <!-- AC Rooms -->
+                    <div class="service-offering-card">
+                        <span class="service-card-tag">Amenity</span>
+                        <div class="service-card-icon"><i class="fa-solid fa-snowflake"></i></div>
+                        <h3>AC Rooms</h3>
+                        <p>Air-conditioned rooms for a comfortable stay ensuring optimal climate control regardless of the weather outside.</p>
+                    </div>
 
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-bell-concierge"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>Service</h4>
-                                <p>Room service turnaround, check-in, check-out</p>
-                            </div>
-                        </div>
+                    <!-- Free Wi-Fi -->
+                    <div class="service-offering-card">
+                        <span class="service-card-tag">Amenity</span>
+                        <div class="service-card-icon"><i class="fa-solid fa-wifi"></i></div>
+                        <h3>Free Wi-Fi</h3>
+                        <p>Complimentary Wi-Fi for guests to browse, stay connected with family, or conduct business meetings seamlessly.</p>
+                    </div>
 
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-fan"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>AC</h4>
-                                <p>Air conditioning, thermostats, cooling & heating</p>
-                            </div>
-                        </div>
+                    <!-- Free Parking -->
+                    <div class="service-offering-card">
+                        <span class="service-card-tag">Facility</span>
+                        <div class="service-card-icon"><i class="fa-solid fa-square-parking"></i></div>
+                        <h3>Free Parking</h3>
+                        <p>Complimentary parking facility for guests with secure on-premises parking space for four-wheelers and two-wheelers.</p>
+                    </div>
 
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-wifi"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>WiFi</h4>
-                                <p>Internet speeds, wireless connectivity, reliability</p>
-                            </div>
-                        </div>
+                    <!-- Complimentary Breakfast -->
+                    <div class="service-offering-card">
+                        <span class="service-card-tag">Service</span>
+                        <div class="service-card-icon"><i class="fa-solid fa-egg"></i></div>
+                        <h3>Complimentary Breakfast</h3>
+                        <p>Breakfast provided for guests every morning featuring warm, fresh breakfast delicacies and hot morning tea.</p>
+                    </div>
 
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-location-dot"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>Location</h4>
-                                <p>City center proximity, transit accessibility, safety</p>
-                            </div>
-                        </div>
+                    <!-- 24 Hours Service -->
+                    <div class="service-offering-card">
+                        <span class="service-card-tag">Service</span>
+                        <div class="service-card-icon"><i class="fa-solid fa-clock"></i></div>
+                        <h3>24 Hours Service</h3>
+                        <p>Round-the-clock guest service, flexible late-night check-ins, caretaker assistance, and rapid room support.</p>
+                    </div>
 
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-dumbbell"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>Facilities</h4>
-                                <p>Pool, fitness gym, parking spaces, elevators</p>
-                            </div>
-                        </div>
-
-                        <div class="aspect-card">
-                            <div class="aspect-icon-box"><i class="fa-solid fa-tags"></i></div>
-                            <div class="aspect-card-details">
-                                <h4>Price</h4>
-                                <p>Affordability, value-for-money, bill transparency</p>
-                            </div>
-                        </div>
+                    <!-- Friendly Staff -->
+                    <div class="service-offering-card">
+                        <span class="service-card-tag">Hospitality</span>
+                        <div class="service-card-icon"><i class="fa-solid fa-user-group"></i></div>
+                        <h3>Friendly Staff</h3>
+                        <p>Friendly and guest-focused service with courteous caretakers ready to assist with travel guidance and stay comfort.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- 5. REVIEWS VIEW -->
+            <!-- 4. GUEST REVIEWS VIEW -->
             <section id="view-reviews" class="page-view">
                 <div class="card">
                     <div class="filter-bar">
                         <div class="filter-buttons">
                             <button class="filter-btn active" onclick="filterReviews('all', this)">All Reviews</button>
                             <button class="filter-btn" onclick="filterReviews('positive', this)">
-                                <i class="fa-regular fa-face-smile" style="color:#10b981;"></i> Positive
+                                <i class="fa-regular fa-face-smile" style="color:var(--sentiment-pos);"></i> Positive
                             </button>
                             <button class="filter-btn" onclick="filterReviews('negative', this)">
-                                <i class="fa-regular fa-face-frown" style="color:#ef4444;"></i> Negative
+                                <i class="fa-regular fa-face-frown" style="color:var(--sentiment-neg);"></i> Negative
                             </button>
                             <button class="filter-btn" onclick="filterReviews('neutral', this)">
-                                <i class="fa-regular fa-face-meh" style="color:#f59e0b;"></i> Neutral
+                                <i class="fa-regular fa-face-meh" style="color:var(--sentiment-neu);"></i> Neutral
                             </button>
                         </div>
                         <div class="search-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="reviewSearch" placeholder="Search review or service...">
+                            <input type="text" id="reviewSearch" placeholder="Search guest review or service...">
                         </div>
                     </div>
 
@@ -390,93 +429,84 @@
                             <thead>
                                 <tr>
                                     <th style="width: 50px;">ID</th>
-                                    <th>Review</th>
+                                    <th>Guest Review</th>
                                     <th style="width: 120px;">Sentiment</th>
-                                    <th style="width: 140px;">Aspect</th>
+                                    <th style="width: 150px;">Service / Aspect</th>
+                                    <th style="width: 100px;">Rating</th>
                                     <th style="width: 110px;">Date</th>
                                 </tr>
                             </thead>
                             <tbody id="reviewsTableBody">
-                                <!-- Populated dynamically -->
+                                <!-- Populated dynamically from 30 verified reviews -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- 6. INSIGHTS VIEW -->
+            <!-- 5. INSIGHTS VIEW -->
             <section id="view-insights" class="page-view">
                 <div class="insights-grid" id="insightsContainer">
-                    <!-- Populated dynamically via dashboard data -->
+                    <!-- Populated dynamically via dashboard API -->
                 </div>
 
                 <div class="card" style="margin-top: 24px;">
                     <div class="card-title">
-                        <span><i class="fa-solid fa-list-check"></i> Standard Operating Recommendations</span>
+                        <span><i class="fa-solid fa-bullseye"></i> Babuseth Management Strategic Directives</span>
                     </div>
-                    <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 20px; font-size: 0.92rem;">
-                        <li><strong>Cleanliness:</strong> "Guests are generally satisfied with cleanliness. Maintain periodic deep-clean inspections."</li>
-                        <li><strong>Room Service:</strong> "Most complaints are related to room service response lag. Optimize kitchen-to-room delivery dispatch."</li>
-                        <li><strong>HVAC & Climate:</strong> "AC-related complaints require immediate preventative maintenance before peak summer/winter."</li>
-                        <li><strong>Wi-Fi Infrastructure:</strong> "Upgrade floor-level wireless access points to guarantee uninterrupted business remote work."</li>
+                    <ul style="color: var(--text-secondary); line-height: 1.85; padding-left: 20px; font-size: 0.92rem;">
+                        <li><strong>Staff &amp; Courtesy:</strong> "Guests frequently appreciate the friendly staff. Continue maintaining the friendly and responsive service."</li>
+                        <li><strong>Hygiene Standard:</strong> "Room cleanliness receives positive feedback. Maintain the current room-cleaning standards."</li>
+                        <li><strong>Wi-Fi Infrastructure:</strong> "Wi-Fi is the most common area requiring improvement. Check Wi-Fi coverage and improve connection stability."</li>
+                        <li><strong>Strategic Transit Advantage:</strong> "Guests value the hotel's location near the railway station. Maintain high visibility for transit travelers."</li>
+                        <li><strong>Morning Dining:</strong> "Complimentary breakfast is positively mentioned by guests. Review menu freshness and serving punctuality regularly."</li>
                     </ul>
                 </div>
             </section>
 
-            <!-- 9. ABOUT / COGNITIVE COMPUTING VIEW -->
+            <!-- 6. ABOUT VIEW -->
             <section id="view-about" class="page-view">
                 <div class="card">
-                    <div class="card-title">
-                        <span><i class="fa-solid fa-brain"></i> Cognitive Computing Principles</span>
+                    <div class="about-hotel-header">
+                        <img src="{{ url_for('static', filename='images/babuseth_logo.svg') }}" alt="Babuseth Logo" class="about-logo-large">
+                        <div>
+                            <h2 style="font-size: 1.35rem; color: var(--navy-dark); font-weight: 800;">Babuseth Guest House &amp; Lodging</h2>
+                            <p style="color: var(--orange-main); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; margin-top: 2px;">
+                                Guest Feedback &amp; Service Quality Analyzer
+                            </p>
+                            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 8px; line-height: 1.5;">
+                                Babuseth Guest House &amp; Lodging provides comfortable accommodation with AC rooms, free Wi-Fi, free parking, complimentary breakfast, friendly staff and 24-hour service.
+                            </p>
+                        </div>
                     </div>
-                    <p style="color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
-                        Cognitive computing systems simulate human thought processes in computerized models. Unlike traditional software that follows rigid conditional branches, this system interprets natural language text, infers sentiment polarity, extracts contextual hotel services, and formulates automated management decisions.
-                    </p>
 
-                    <div class="cognitive-diagram-box">
-                        <h3 style="font-size: 1rem; margin-bottom: 8px;">Cognitive Data Pipeline</h3>
-                        
-                        <div class="pipeline-diagram">
-                            <div class="pipeline-node">
-                                <i class="fa-solid fa-comment-dots"></i>
-                                <h4>1. Input</h4>
-                                <p>Human language review</p>
+                    <!-- Hotel Contact Information -->
+                    <div class="hotel-contact-list">
+                        <div class="contact-item">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <div>
+                                <strong style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Location</strong>
+                                <p style="font-size: 0.88rem; font-weight: 700; color: var(--navy-dark);">Railway Station, Chhatrapati Sambhajinagar, Maharashtra</p>
                             </div>
-                            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                            <div class="pipeline-node">
-                                <i class="fa-solid fa-language"></i>
-                                <h4>2. Understand</h4>
-                                <p>Syntax & negation parsing</p>
+                        </div>
+
+                        <div class="contact-item">
+                            <i class="fa-solid fa-phone-volume"></i>
+                            <div>
+                                <strong style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Phone Number</strong>
+                                <p style="font-size: 0.88rem; font-weight: 700; color: var(--navy-dark);">7821077435</p>
                             </div>
-                            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                            <div class="pipeline-node">
-                                <i class="fa-solid fa-heart-pulse"></i>
-                                <h4>3. Sentiment</h4>
-                                <p>Positive / Negative / Neutral</p>
-                            </div>
-                            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                            <div class="pipeline-node">
-                                <i class="fa-solid fa-hotel"></i>
-                                <h4>4. Aspect</h4>
-                                <p>Service category match</p>
-                            </div>
-                            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                            <div class="pipeline-node" style="border-color: var(--brand-teal); background: var(--brand-teal-light);">
-                                <i class="fa-solid fa-lightbulb" style="color: var(--brand-teal);"></i>
-                                <h4>5. Recommend</h4>
-                                <p>Cognitive action plan</p>
+                        </div>
+
+                        <div class="contact-item">
+                            <i class="fa-solid fa-envelope"></i>
+                            <div>
+                                <strong style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Email Address</strong>
+                                <p style="font-size: 0.88rem; font-weight: 700; color: var(--navy-dark);">babusethguesthouse@gmail.com</p>
                             </div>
                         </div>
                     </div>
 
-                    <div style="margin-top: 24px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
-                        <h4 style="color: var(--text-primary); margin-bottom: 8px;">Key System Characteristics:</h4>
-                        <ul style="padding-left: 20px;">
-                            <li><strong>Adaptive & Context-Aware:</strong> Successfully handles contrast conjunctions (e.g., <em>"The room was clean but the AC was not working properly"</em> correctly assigns Negative sentiment and flags AC as the primary concern).</li>
-                            <li><strong>Transparent & Explainable:</strong> Displays confidence polarity scores and step-by-step pipeline traces for auditability.</li>
-                            <li><strong>Action-Oriented:</strong> Translates sentiment into concrete operational suggestions rather than raw passive statistics.</li>
-                        </ul>
-                    </div>
                 </div>
             </section>
 

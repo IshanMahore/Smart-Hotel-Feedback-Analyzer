@@ -1,6 +1,7 @@
 // Global State and Chart Instances
 let sentimentChart = null;
-let aspectChart = null;
+let serviceFeedbackChart = null;
+let posNegChart = null;
 let currentReviews = [];
 let activeFilter = 'all';
 
@@ -20,12 +21,30 @@ function initNavigation() {
     const pageSubheading = document.getElementById('pageSubheading');
 
     const headings = {
-        'dashboard': { title: 'Hotel Feedback Dashboard', sub: 'Real-time overview of guest sentiments and service performance' },
-        'analyze': { title: 'Analyze Guest Feedback', sub: 'Cognitive NLP processing for sentiment, aspect detection & suggestions' },
-        'aspects': { title: 'Hotel Service Aspects', sub: 'Granular classification into 10 key operational categories' },
-        'reviews': { title: 'Guest Reviews Database', sub: 'Browse, search, and filter historical guest feedback' },
-        'insights': { title: 'Management Insights', sub: 'Actionable summaries and prioritized operational recommendations' },
-        'about': { title: 'Cognitive Computing Architecture', sub: 'How human feedback is transformed into actionable intelligence' }
+        'dashboard': {
+            title: 'Babuseth Guest House & Lodging',
+            sub: 'Guest Feedback Intelligence Dashboard'
+        },
+        'analyze': {
+            title: 'Analyze Guest Feedback',
+            sub: 'Cognitive NLP processing for sentiment, aspect detection & recommendations'
+        },
+        'reviews': {
+            title: 'Guest Reviews Database',
+            sub: 'Verified guest feedback history and performance ratings'
+        },
+        'insights': {
+            title: 'Hotel Management Insights',
+            sub: 'Actionable summaries and prioritized operational intelligence'
+        },
+        'services': {
+            title: 'Hotel Services & Amenities',
+            sub: 'Babuseth Guest House & Lodging accommodation facilities'
+        },
+        'about': {
+            title: 'About Babuseth Guest House & Lodging',
+            sub: 'Property overview and Cognitive Computing architecture'
+        }
     };
 
     navItems.forEach(item => {
@@ -48,10 +67,11 @@ function initNavigation() {
                 pageSubheading.textContent = headings[targetView].sub;
             }
 
-            // Trigger chart resize if navigating to dashboard
+            // Resize charts upon returning to dashboard
             if (targetView === 'dashboard') {
                 if (sentimentChart) sentimentChart.resize();
-                if (aspectChart) aspectChart.resize();
+                if (serviceFeedbackChart) serviceFeedbackChart.resize();
+                if (posNegChart) posNegChart.resize();
             }
         });
     });
@@ -68,18 +88,21 @@ async function loadDashboardData() {
         document.getElementById('metricPositive').textContent = data.positive;
         document.getElementById('metricNegative').textContent = data.negative;
         document.getElementById('metricNeutral').textContent = data.neutral;
-        document.getElementById('metricComplaint').textContent = data.most_common_complaint;
-        document.getElementById('metricPraised').textContent = data.most_liked_service;
+        document.getElementById('metricRating').textContent = `${data.avg_rating} ★`;
+        document.getElementById('metricPraised').textContent = data.most_praised_service;
+        document.getElementById('metricComplaint').textContent = data.most_complained_service;
 
-        // Render Charts
+        // Render All 3 Required Charts
         renderSentimentChart(data.sentiment_distribution);
-        renderAspectChart(data.aspect_distribution);
+        renderServiceFeedbackChart(data.service_feedback);
+        renderPosNegChart(data.service_pos_neg);
         renderDynamicInsights(data.insights);
     } catch (err) {
         console.error('Failed to load dashboard data:', err);
     }
 }
 
+// Chart 1: Guest Sentiment Distribution (Positive, Neutral, Negative)
 function renderSentimentChart(dist) {
     const ctx = document.getElementById('sentimentChart').getContext('2d');
     if (sentimentChart) sentimentChart.destroy();
@@ -87,10 +110,10 @@ function renderSentimentChart(dist) {
     sentimentChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Positive', 'Negative', 'Neutral'],
+            labels: ['Positive', 'Neutral', 'Negative'],
             datasets: [{
-                data: [dist.Positive || 0, dist.Negative || 0, dist.Neutral || 0],
-                backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                data: [dist.Positive || 0, dist.Neutral || 0, dist.Negative || 0],
+                backgroundColor: ['#16a34a', '#d97706', '#dc2626'],
                 borderWidth: 2,
                 borderColor: '#ffffff'
             }]
@@ -101,31 +124,33 @@ function renderSentimentChart(dist) {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { boxWidth: 14, font: { size: 12, family: 'system-ui' } }
+                    labels: { boxWidth: 12, font: { size: 12, family: 'system-ui', weight: '600' } }
                 }
             },
-            cutout: '70%'
+            cutout: '68%'
         }
     });
 }
 
-function renderAspectChart(dist) {
-    const ctx = document.getElementById('aspectChart').getContext('2d');
-    if (aspectChart) aspectChart.destroy();
+// Chart 2: Service Feedback (Room, Cleanliness, Staff, AC, Wi-Fi, Parking, Breakfast, Service)
+function renderServiceFeedbackChart(feedback) {
+    const ctx = document.getElementById('serviceFeedbackChart').getContext('2d');
+    if (serviceFeedbackChart) serviceFeedbackChart.destroy();
 
-    const labels = Object.keys(dist);
-    const counts = Object.values(dist);
+    const labels = Object.keys(feedback);
+    const dataValues = Object.values(feedback);
 
-    aspectChart = new Chart(ctx, {
+    serviceFeedbackChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Mention Count',
-                data: counts,
-                backgroundColor: '#0284c7',
+                label: 'Guest Mentions',
+                data: dataValues,
+                backgroundColor: '#0b1b3d',
+                hoverBackgroundColor: '#ea580c',
                 borderRadius: 6,
-                maxBarThickness: 32
+                maxBarThickness: 34
             }]
         },
         options: {
@@ -142,7 +167,61 @@ function renderAspectChart(dist) {
                 },
                 x: {
                     grid: { display: false },
-                    ticks: { font: { size: 11 } }
+                    ticks: { font: { size: 11, weight: '600' } }
+                }
+            }
+        }
+    });
+}
+
+// Chart 3: Positive vs Negative Feedback
+function renderPosNegChart(posNegData) {
+    const ctx = document.getElementById('posNegChart').getContext('2d');
+    if (posNegChart) posNegChart.destroy();
+
+    const services = Object.keys(posNegData);
+    const posCounts = services.map(s => posNegData[s].positive);
+    const negCounts = services.map(s => posNegData[s].negative);
+
+    posNegChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: services,
+            datasets: [
+                {
+                    label: 'Positive Feedback',
+                    data: posCounts,
+                    backgroundColor: '#16a34a',
+                    borderRadius: 6,
+                    maxBarThickness: 28
+                },
+                {
+                    label: 'Negative Feedback',
+                    data: negCounts,
+                    backgroundColor: '#dc2626',
+                    borderRadius: 6,
+                    maxBarThickness: 28
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { boxWidth: 12, font: { size: 12, weight: '600' } }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0, font: { size: 11 } },
+                    grid: { color: '#f1f5f9' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 11, weight: '600' } }
                 }
             }
         }
@@ -171,7 +250,7 @@ function setupAnalyzeForm() {
     async function triggerAnalysis() {
         const text = inputArea.value.trim();
         if (!text) {
-            alert('Please enter a guest feedback comment to analyze.');
+            alert('Please enter a guest review to analyze.');
             return;
         }
 
@@ -193,7 +272,6 @@ function setupAnalyzeForm() {
             const result = await res.json();
             displayAnalysisResult(result);
 
-            // If saved, refresh dashboard and review tables
             if (saveCheckbox.checked) {
                 loadDashboardData();
                 loadReviewsData();
@@ -211,29 +289,45 @@ function setupAnalyzeForm() {
         resultBox.style.display = 'block';
 
         const badge = document.getElementById('resSentimentBadge');
-        const aspectVal = document.getElementById('resAspect');
-        const polarityVal = document.getElementById('resPolarity');
-        const suggestionVal = document.getElementById('resSuggestion');
+        const aspectsContainer = document.getElementById('resAspectsContainer');
+        const priorityBadge = document.getElementById('resPriority');
+        const mainIssue = document.getElementById('resMainIssue');
+        const recommendation = document.getElementById('resRecommendation');
         const timeline = document.getElementById('resPipeline');
 
-        // Sentiment badge styling
+        // Overall Sentiment styling
         badge.className = 'sentiment-badge-lg';
         if (res.sentiment === 'Positive') {
             badge.classList.add('badge-positive');
-            badge.innerHTML = '<i class="fa-regular fa-face-smile"></i> Sentiment: Positive';
+            badge.innerHTML = '<i class="fa-regular fa-face-smile"></i> Overall Sentiment: Positive';
         } else if (res.sentiment === 'Negative') {
             badge.classList.add('badge-negative');
-            badge.innerHTML = '<i class="fa-regular fa-face-frown"></i> Sentiment: Negative';
+            badge.innerHTML = '<i class="fa-regular fa-face-frown"></i> Overall Sentiment: Negative';
         } else {
             badge.classList.add('badge-neutral');
-            badge.innerHTML = '<i class="fa-regular fa-face-meh"></i> Sentiment: Neutral';
+            badge.innerHTML = '<i class="fa-regular fa-face-meh"></i> Overall Sentiment: Neutral';
         }
 
-        aspectVal.textContent = res.aspect;
-        polarityVal.textContent = `Polarity Score: ${res.polarity}`;
-        suggestionVal.textContent = res.suggestion;
+        // Detected Aspects (Cleanliness -> Positive, Staff -> Positive, Wi-Fi -> Negative, etc.)
+        aspectsContainer.innerHTML = '';
+        res.aspect_sentiments.forEach(asp => {
+            const item = document.createElement('div');
+            const cls = asp.sentiment === 'Positive' ? 'pos' : (asp.sentiment === 'Negative' ? 'neg' : 'neu');
+            const icon = asp.sentiment === 'Positive' ? 'fa-circle-check' : (asp.sentiment === 'Negative' ? 'fa-circle-xmark' : 'fa-circle-minus');
+            item.className = `aspect-badge-item ${cls}`;
+            item.innerHTML = `<span><strong>${asp.aspect}</strong> → ${asp.sentiment}</span> <i class="fa-solid ${icon}"></i>`;
+            aspectsContainer.appendChild(item);
+        });
 
-        // Populate Cognitive Timeline
+        // Priority
+        priorityBadge.className = `priority-pill priority-${res.priority.toLowerCase()}`;
+        priorityBadge.textContent = res.priority;
+
+        // Main Issue & Recommendation
+        mainIssue.textContent = res.main_issue;
+        recommendation.textContent = `"${res.recommendation}"`;
+
+        // Cognitive Computing Pipeline Trace
         timeline.innerHTML = '';
         res.pipeline_steps.forEach((step, index) => {
             const item = document.createElement('div');
@@ -250,7 +344,7 @@ function setupAnalyzeForm() {
     }
 }
 
-// 5. REVIEWS PAGE & FILTERING
+// 3. GUEST REVIEWS TABLE & FILTERING
 async function loadReviewsData(filter = 'all') {
     try {
         const url = filter === 'all' ? '/api/reviews' : `/api/reviews?sentiment=${filter}`;
@@ -267,7 +361,7 @@ function renderReviewsTable(reviews) {
     tbody.innerHTML = '';
 
     if (reviews.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:32px; color:#94a3b8;">No reviews found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:#94a3b8;">No reviews found.</td></tr>`;
         return;
     }
 
@@ -278,11 +372,14 @@ function renderReviewsTable(reviews) {
         if (r.sentiment === 'Positive') pillClass = 'pill-positive';
         if (r.sentiment === 'Negative') pillClass = 'pill-negative';
 
+        const stars = '★'.repeat(Math.round(r.rating || 4));
+
         tr.innerHTML = `
-            <td style="color:#64748b; font-weight:600;">#${r.id}</td>
-            <td style="max-width: 450px; line-height: 1.4;">${escapeHtml(r.review)}</td>
+            <td style="color:#64748b; font-weight:700;">#${r.id}</td>
+            <td style="max-width: 440px; line-height: 1.45;">${escapeHtml(r.review)}</td>
             <td><span class="sentiment-pill ${pillClass}">${r.sentiment}</span></td>
             <td><span class="aspect-tag"><i class="fa-solid fa-tag"></i> ${r.aspect}</span></td>
+            <td style="color:#ea580c; font-weight:700; white-space:nowrap;">${stars}</td>
             <td style="color:#64748b; white-space:nowrap;">${r.date}</td>
         `;
         tbody.appendChild(tr);
@@ -311,7 +408,7 @@ function setupTableSearch() {
     });
 }
 
-// 6. INSIGHTS VIEW
+// 4. INSIGHTS VIEW
 function renderDynamicInsights(insights) {
     const container = document.getElementById('insightsContainer');
     if (!container) return;
@@ -325,7 +422,7 @@ function renderDynamicInsights(insights) {
                 <i class="fa-solid ${ins.icon}"></i>
             </div>
             <div class="insight-content">
-                <h4>Operational Insight</h4>
+                <h4>${ins.title}</h4>
                 <p>"${ins.text}"</p>
             </div>
         `;
@@ -333,7 +430,7 @@ function renderDynamicInsights(insights) {
     });
 }
 
-// Helper to sanitize HTML strings
+// Helper to escape HTML characters
 function escapeHtml(text) {
     const map = {
         '&': '&amp;',
