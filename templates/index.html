@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Hotel Feedback Analyzer</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="brand-header">
+            <i class="fa-solid fa-hotel brand-icon"></i>
+            <div>
+                <h2>Smart Hotel</h2>
+                <p>Feedback Analyzer</p>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li>
+                <a class="nav-item active" data-view="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-item" data-view="analyze">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Analyze Feedback</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-item" data-view="aspects">
+                    <i class="fa-solid fa-cubes"></i>
+                    <span>Hotel Aspects</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-item" data-view="reviews">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Reviews</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-item" data-view="insights">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span>Insights</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-item" data-view="about">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>About</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="status-dot"></div>
+            <span>NLP Engine Online</span>
+        </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <div class="main-wrapper">
+        <!-- Top Header Bar -->
+        <header class="top-navbar">
+            <div class="page-title">
+                <h1 id="pageHeading">Hotel Feedback Dashboard</h1>
+                <p id="pageSubheading">Real-time overview of guest sentiments and service performance</p>
+            </div>
+            <div class="top-actions">
+                <span class="badge badge-info">
+                    <i class="fa-solid fa-database"></i> 50+ Verified Reviews
+                </span>
+            </div>
+        </header>
+
+        <!-- Content Body with Dynamic Views -->
+        <main class="content-body">
+
+            <!-- 1. DASHBOARD VIEW -->
+            <section id="view-dashboard" class="page-view active">
+                <!-- Summary KPI Cards -->
+                <div class="metrics-grid">
+                    <div class="card metric-card">
+                        <div class="metric-info">
+                            <h3>Total Reviews</h3>
+                            <div class="number" id="metricTotal">--</div>
+                            <div class="subtitle">Verified stays analyzed</div>
+                        </div>
+                        <div class="metric-icon-wrap icon-blue">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-info">
+                            <h3>Positive Reviews</h3>
+                            <div class="number" style="color: var(--sentiment-pos);" id="metricPositive">--</div>
+                            <div class="subtitle">Satisfied guests</div>
+                        </div>
+                        <div class="metric-icon-wrap icon-green">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-info">
+                            <h3>Negative Reviews</h3>
+                            <div class="number" style="color: var(--sentiment-neg);" id="metricNegative">--</div>
+                            <div class="subtitle">Actionable issues</div>
+                        </div>
+                        <div class="metric-icon-wrap icon-red">
+                            <i class="fa-solid fa-thumbs-down"></i>
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-info">
+                            <h3>Neutral Reviews</h3>
+                            <div class="number" style="color: var(--sentiment-neu);" id="metricNeutral">--</div>
+                            <div class="subtitle">Balanced remarks</div>
+                        </div>
+                        <div class="metric-icon-wrap icon-amber">
+                            <i class="fa-solid fa-minus"></i>
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-info">
+                            <h3>Top Complaint</h3>
+                            <div class="number" style="font-size: 1.3rem; color: #dc2626;" id="metricComplaint">--</div>
+                            <div class="subtitle">Frequent service issue</div>
+                        </div>
+                        <div class="metric-icon-wrap icon-red">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-info">
+                            <h3>Most Liked</h3>
+                            <div class="number" style="font-size: 1.3rem; color: #059669;" id="metricPraised">--</div>
+                            <div class="subtitle">Highest guest praise</div>
+                        </div>
+                        <div class="metric-icon-wrap icon-teal">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Layout -->
+                <div class="charts-grid">
+                    <div class="card">
+                        <div class="card-title">
+                            <span><i class="fa-solid fa-chart-pie"></i> Sentiment Distribution</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="sentimentChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            <span><i class="fa-solid fa-chart-simple"></i> Feedback by Hotel Aspect</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="aspectChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. ANALYZE FEEDBACK VIEW -->
+            <section id="view-analyze" class="page-view">
+                <div class="analyzer-wrapper">
+                    <!-- Feedback Input Card -->
+                    <div class="card input-card">
+                        <div class="card-title">
+                            <span><i class="fa-solid fa-pen-to-square"></i> Enter Guest Feedback</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+                            Click a sample test case below or enter any guest review text:
+                        </p>
+
+                        <!-- Presets for fast testing -->
+                        <div class="preset-buttons">
+                            <button type="button" class="preset-chip" data-text="The room was clean but the AC was not working properly.">
+                                <i class="fa-solid fa-fan"></i> Test Case 1: AC Issue
+                            </button>
+                            <button type="button" class="preset-chip" data-text="Front desk staff were exceptionally polite and helped us check in early.">
+                                <i class="fa-solid fa-user"></i> Test Case 2: Polite Staff
+                            </button>
+                            <button type="button" class="preset-chip" data-text="The breakfast buffet was delicious and had plenty of fresh choices.">
+                                <i class="fa-solid fa-utensils"></i> Test Case 3: Food
+                            </button>
+                            <button type="button" class="preset-chip" data-text="Wi-Fi kept dropping every 5 minutes during our video meetings.">
+                                <i class="fa-solid fa-wifi"></i> Test Case 4: WiFi Trouble
+                            </button>
+                            <button type="button" class="preset-chip" data-text="The room was standard and the price was average for downtown.">
+                                <i class="fa-solid fa-tag"></i> Test Case 5: Neutral Price
+                            </button>
+                        </div>
+
+                        <textarea id="feedbackInput" class="feedback-input" placeholder="e.g. The room was clean but the AC was not working properly."></textarea>
+
+                        <div class="action-bar">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="saveToDataset" checked>
+                                <span>Save analysis to reviews dataset</span>
+                            </label>
+                            <button id="btnAnalyze" class="btn btn-primary">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Feedback
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Output Card -->
+                    <div class="card result-card">
+                        <div class="card-title">
+                            <span><i class="fa-solid fa-microchip"></i> Cognitive Analysis Output</span>
+                        </div>
+
+                        <div id="resultEmpty" class="empty-state">
+                            <i class="fa-solid fa-clipboard-question"></i>
+                            <p>Enter text on the left and click "Analyze Feedback" to view sentiment, service aspect, and management recommendations.</p>
+                        </div>
+
+                        <div id="resultBox" style="display: none;">
+                            <div class="result-header">
+                                <span id="resSentimentBadge" class="sentiment-badge-lg badge-negative">
+                                    <i class="fa-regular fa-face-frown"></i> Sentiment: Negative
+                                </span>
+                                <span id="resPolarity" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">
+                                    Polarity Score: -0.5
+                                </span>
+                            </div>
+
+                            <div class="result-aspect-box">
+                                <span>Detected Aspect</span>
+                                <h3>
+                                    <i class="fa-solid fa-tags" style="color: var(--brand-blue);"></i>
+                                    <span id="resAspect">AC / Maintenance</span>
+                                </h3>
+                            </div>
+
+                            <div class="suggestion-box">
+                                <h4><i class="fa-solid fa-lightbulb"></i> Management Suggestion</h4>
+                                <p id="resSuggestion">"Check and maintain the room AC units regularly."</p>
+                            </div>
+
+                            <!-- Step-by-Step Cognitive Pipeline Flow -->
+                            <div class="cognitive-flow">
+                                <div class="flow-title">Cognitive Computing Pipeline Trace</div>
+                                <div class="step-timeline" id="resPipeline">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. HOTEL ASPECTS VIEW -->
+            <section id="view-aspects" class="page-view">
+                <div class="card">
+                    <div class="card-title">
+                        <span><i class="fa-solid fa-cubes"></i> Detected Hotel Operational Categories</span>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
+                        The system uses rule-assisted Natural Language Processing to categorize reviews into 10 essential hotel services:
+                    </p>
+
+                    <div class="aspects-grid">
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-bed"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>Room</h4>
+                                <p>Beds, comfort, space, views, bathroom fittings</p>
+                            </div>
+                        </div>
+
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-sparkles"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>Cleanliness</h4>
+                                <p>Housekeeping hygiene, sanitization, fresh linens</p>
+                            </div>
+                        </div>
+
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-user-tie"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>Staff</h4>
+                                <p>Front desk, concierge, courtesy, hospitality</p>
+                            </div>
+                        </div>
+
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-utensils"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>Food</h4>
+                                <p>Breakfast buffet, restaurants, dining quality</p>
+                            </div>
+                        </div>
+
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-bell-concierge"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>Service</h4>
+                                <p>Room service turnaround, check-in, check-out</p>
+                            </div>
+                        </div>
+
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-fan"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>AC</h4>
+                                <p>Air conditioning, thermostats, cooling & heating</p>
+                            </div>
+                        </div>
+
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-wifi"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>WiFi</h4>
+                                <p>Internet speeds, wireless connectivity, reliability</p>
+                            </div>
+                        </div>
+
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>Location</h4>
+                                <p>City center proximity, transit accessibility, safety</p>
+                            </div>
+                        </div>
+
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-dumbbell"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>Facilities</h4>
+                                <p>Pool, fitness gym, parking spaces, elevators</p>
+                            </div>
+                        </div>
+
+                        <div class="aspect-card">
+                            <div class="aspect-icon-box"><i class="fa-solid fa-tags"></i></div>
+                            <div class="aspect-card-details">
+                                <h4>Price</h4>
+                                <p>Affordability, value-for-money, bill transparency</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. REVIEWS VIEW -->
+            <section id="view-reviews" class="page-view">
+                <div class="card">
+                    <div class="filter-bar">
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" onclick="filterReviews('all', this)">All Reviews</button>
+                            <button class="filter-btn" onclick="filterReviews('positive', this)">
+                                <i class="fa-regular fa-face-smile" style="color:#10b981;"></i> Positive
+                            </button>
+                            <button class="filter-btn" onclick="filterReviews('negative', this)">
+                                <i class="fa-regular fa-face-frown" style="color:#ef4444;"></i> Negative
+                            </button>
+                            <button class="filter-btn" onclick="filterReviews('neutral', this)">
+                                <i class="fa-regular fa-face-meh" style="color:#f59e0b;"></i> Neutral
+                            </button>
+                        </div>
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="reviewSearch" placeholder="Search review or service...">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="reviews-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">ID</th>
+                                    <th>Review</th>
+                                    <th style="width: 120px;">Sentiment</th>
+                                    <th style="width: 140px;">Aspect</th>
+                                    <th style="width: 110px;">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviewsTableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. INSIGHTS VIEW -->
+            <section id="view-insights" class="page-view">
+                <div class="insights-grid" id="insightsContainer">
+                    <!-- Populated dynamically via dashboard data -->
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-title">
+                        <span><i class="fa-solid fa-list-check"></i> Standard Operating Recommendations</span>
+                    </div>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 20px; font-size: 0.92rem;">
+                        <li><strong>Cleanliness:</strong> "Guests are generally satisfied with cleanliness. Maintain periodic deep-clean inspections."</li>
+                        <li><strong>Room Service:</strong> "Most complaints are related to room service response lag. Optimize kitchen-to-room delivery dispatch."</li>
+                        <li><strong>HVAC & Climate:</strong> "AC-related complaints require immediate preventative maintenance before peak summer/winter."</li>
+                        <li><strong>Wi-Fi Infrastructure:</strong> "Upgrade floor-level wireless access points to guarantee uninterrupted business remote work."</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 9. ABOUT / COGNITIVE COMPUTING VIEW -->
+            <section id="view-about" class="page-view">
+                <div class="card">
+                    <div class="card-title">
+                        <span><i class="fa-solid fa-brain"></i> Cognitive Computing Principles</span>
+                    </div>
+                    <p style="color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem;">
+                        Cognitive computing systems simulate human thought processes in computerized models. Unlike traditional software that follows rigid conditional branches, this system interprets natural language text, infers sentiment polarity, extracts contextual hotel services, and formulates automated management decisions.
+                    </p>
+
+                    <div class="cognitive-diagram-box">
+                        <h3 style="font-size: 1rem; margin-bottom: 8px;">Cognitive Data Pipeline</h3>
+                        
+                        <div class="pipeline-diagram">
+                            <div class="pipeline-node">
+                                <i class="fa-solid fa-comment-dots"></i>
+                                <h4>1. Input</h4>
+                                <p>Human language review</p>
+                            </div>
+                            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div class="pipeline-node">
+                                <i class="fa-solid fa-language"></i>
+                                <h4>2. Understand</h4>
+                                <p>Syntax & negation parsing</p>
+                            </div>
+                            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div class="pipeline-node">
+                                <i class="fa-solid fa-heart-pulse"></i>
+                                <h4>3. Sentiment</h4>
+                                <p>Positive / Negative / Neutral</p>
+                            </div>
+                            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div class="pipeline-node">
+                                <i class="fa-solid fa-hotel"></i>
+                                <h4>4. Aspect</h4>
+                                <p>Service category match</p>
+                            </div>
+                            <div class="pipeline-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div class="pipeline-node" style="border-color: var(--brand-teal); background: var(--brand-teal-light);">
+                                <i class="fa-solid fa-lightbulb" style="color: var(--brand-teal);"></i>
+                                <h4>5. Recommend</h4>
+                                <p>Cognitive action plan</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 24px; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
+                        <h4 style="color: var(--text-primary); margin-bottom: 8px;">Key System Characteristics:</h4>
+                        <ul style="padding-left: 20px;">
+                            <li><strong>Adaptive & Context-Aware:</strong> Successfully handles contrast conjunctions (e.g., <em>"The room was clean but the AC was not working properly"</em> correctly assigns Negative sentiment and flags AC as the primary concern).</li>
+                            <li><strong>Transparent & Explainable:</strong> Displays confidence polarity scores and step-by-step pipeline traces for auditability.</li>
+                            <li><strong>Action-Oriented:</strong> Translates sentiment into concrete operational suggestions rather than raw passive statistics.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Application Script -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

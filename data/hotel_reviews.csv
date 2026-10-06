@@ -1,0 +1,58 @@
+id,review,sentiment,aspect,date
+1,"The room was clean but the AC was not working properly.",Negative,AC,2026-09-01
+2,"Exceptional hospitality! The front desk staff welcomed us warmly and helped with our luggage.",Positive,Staff,2026-09-02
+3,"The complimentary breakfast buffet had delicious fresh fruit, pastries, and great coffee.",Positive,Food,2026-09-02
+4,"The bathroom floor was dirty and the shower drain was clogged when we checked in.",Negative,Cleanliness,2026-09-03
+5,"Wi-Fi kept disconnecting during my remote work meetings, very frustrating.",Negative,WiFi,2026-09-04
+6,"The king-sized bed was extremely comfortable and the room had a beautiful city skyline view.",Positive,Room,2026-09-05
+7,"Room service took over an hour to deliver our dinner and the food arrived lukewarm.",Negative,Service,2026-09-05
+8,"Prime location right in downtown, walking distance to major museums and transit stations.",Positive,Location,2026-09-06
+9,"Way overpriced for the subpar amenities provided. Not good value for money.",Negative,Price,2026-09-06
+10,"The rooftop swimming pool was pristine and our kids thoroughly enjoyed the leisure facilities.",Positive,Facilities,2026-09-07
+11,"Housekeeping did a fantastic job every single morning, spotless towels and bed sheets.",Positive,Cleanliness,2026-09-08
+12,"The air conditioning was loud and rattled continuously throughout the night.",Negative,AC,2026-09-08
+13,"Staff at the reception desk were rude and dismissive when we requested extra pillows.",Negative,Staff,2026-09-09
+14,"Dinner at the hotel restaurant was bland and completely tasteless.",Negative,Food,2026-09-10
+15,"Check-in was standard and took the usual ten minutes.",Neutral,Service,2026-09-11
+16,"High-speed internet connection allowed seamless video calls and 4K streaming.",Positive,WiFi,2026-09-11
+17,"The hotel gym was well-equipped with modern treadmills, free weights, and clean towels.",Positive,Facilities,2026-09-12
+18,"The room was fairly standard with basic furnishings and adequate lighting.",Neutral,Room,2026-09-13
+19,"Affordable room rates and great package deals for a weekend family stay.",Positive,Price,2026-09-13
+20,"The hotel is situated far from the city center, requiring expensive taxi rides.",Negative,Location,2026-09-14
+21,"The concierge team arranged fantastic local tour guides on short notice.",Positive,Staff,2026-09-15
+22,"Dust under the bed and stained curtains spoiled what could have been a nice stay.",Negative,Cleanliness,2026-09-15
+23,"AC cooling was top notch and kept the room perfectly chilled during hot weather.",Positive,AC,2026-09-16
+24,"We ordered breakfast in bed and it arrived within 15 minutes, hot and tasty.",Positive,Service,2026-09-17
+25,"The elevator was out of order for two days, forcing us to use stairs to the 6th floor.",Negative,Facilities,2026-09-18
+26,"Room size was average, nothing special but fine for a single night stay.",Neutral,Room,2026-09-18
+27,"Internet speed is okay for simple emails but too weak for video conferencing.",Neutral,WiFi,2026-09-19
+28,"Chef specially prepared gluten-free pancakes for my daughter, delightful hospitality!",Positive,Food,2026-09-20
+29,"Hidden service charges and unexpected resort fees added to our final bill upon checkout.",Negative,Price,2026-09-21
+30,"Conveniently located directly opposite the central railway station.",Positive,Location,2026-09-21
+31,"Impeccable hygiene throughout the entire lobby, hallways, and guest rooms.",Positive,Cleanliness,2026-09-22
+32,"The receptionist greeted us with a cold attitude and showed zero interest in assisting.",Negative,Staff,2026-09-23
+33,"The thermostat in room 402 was completely broken and the room remained stiflingly hot.",Negative,AC,2026-09-23
+34,"Breakfast had a reasonable selection of bread, eggs, and juice.",Neutral,Food,2026-09-24
+35,"Prompt check-in process and our express checkout was handled seamlessly.",Positive,Service,2026-09-25
+36,"The swimming pool was closed for maintenance during our entire holiday without prior notice.",Negative,Facilities,2026-09-26
+37,"Spacious master bedroom with modern bathroom fixtures and a balcony.",Positive,Room,2026-09-26
+38,"Wi-Fi signal dropped repeatedly on the 8th floor guest rooms.",Negative,WiFi,2026-09-27
+39,"Pricing matched the quality expected of a 4-star boutique hotel.",Neutral,Price,2026-09-28
+40,"Located in a tranquil neighborhood with pleasant scenic walking trails nearby.",Positive,Location,2026-09-28
+41,"Towels smelled damp and the bathroom floor had visible water stains.",Negative,Cleanliness,2026-09-29
+42,"Valet and bellboy staff were courteous, helpful, and very respectful.",Positive,Staff,2026-09-29
+43,"Coffee machine in the breakfast lounge was constantly out of order.",Negative,Food,2026-09-30
+44,"Housekeeping staff arrived at the scheduled time as requested.",Neutral,Service,2026-10-01
+45,"Quiet air conditioner that kept the room comfortably cool all night.",Positive,AC,2026-10-01
+46,"Overpriced parking fees of forty dollars per day felt unreasonable.",Negative,Price,2026-10-02
+47,"Fast and reliable Wi-Fi across the lobby and garden patio.",Positive,WiFi,2026-10-02
+48,"The fitness center is somewhat small and lacks heavier dumbbells.",Neutral,Facilities,2026-10-03
+49,"A bit far from the airport but easily accessible by the suburban train line.",Neutral,Location,2026-10-04
+50,"Cramped room with very thin walls where we could hear neighbors talking all night.",Negative,Room,2026-10-05
+51,Wi-Fi kept dropping every 5 minutes during our video meetings.,Neutral,WiFi,2026-10-06
+52,Wi-Fi kept dropping every 5 minutes during our video meetings.,Neutral,WiFi,2026-10-06
+53,the room in unclean,Neutral,Room,2026-10-06
+54,The room is very costlier,Positive,Room,2026-10-06
+55,The room is very costly,Positive,Room,2026-10-06
+56,The room is very nice,Positive,Room,2026-10-06
+57,The rooms are bad,Negative,General,2026-10-06
